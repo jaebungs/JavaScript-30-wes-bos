@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Type Ahead 👀</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <form class="search-form">
+      <input type="text" class="search" placeholder="City or State" />
+      <ul class="suggestions">
+        <li>Filter for a city</li>
+        <li>or a state</li>
+      </ul>
+    </form>
+    <script>
+      const endpoint =
+        "https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json";
+
+      const cities = [];
+      const searchEl = document.querySelector(".search");
+      const suggestionEl = document.querySelector(".suggestions");
+
+      //bring data from endpoint and parse it.
+      //make function that can search city and return
+      //display the result
+      //addEventListener when search box is changed, search cities
+      //highlight words that matches to the search box value
+
+      fetch(endpoint)
+        .then((blob) => blob.json()) //need to convert json because it does not know what kind of data it is. could be json img etc
+        .then((data) => {
+          cities.push(...data);
+        });
+
+      function findMatch(matchInput, cities) {
+        const regex = new RegExp(matchInput.toLowerCase());
+        return cities.filter((place) => {
+          return (
+            place.city.toLowerCase().match(regex) ||
+            place.state.toLowerCase().match(regex)
+          );
+        });
+      }
+
+      function numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      }
+
+      function displayCities() {
+        const searched = findMatch(this.value, cities);
+        const searchedHTML = searched
+          .map((place) => {
+            const regex = new RegExp(this.value); //??????????? //it works without regex... why wes bos uesd it?
+            const highlightCityName = `${place.city.toLowerCase()}`.replace(
+              this.value,
+              `<span class="hl">${this.value}</span>`
+            );
+            const highlightStateName = `${place.state.toLowerCase()}`.replace(
+              this.value,
+              `<span class="hl">${this.value}</span>`
+            );
+
+            return `
+          <li>
+            <span class="name">${highlightCityName}, ${highlightStateName}</span>
+            <span class="population">${numberWithCommas(place.population)}</span>
+          </li>
+          `;
+          })
+          .join("");
+        suggestionEl.innerHTML = searchedHTML;
+      }
+
+      searchEl.addEventListener("change", displayCities);
+      searchEl.addEventListener("keyup", displayCities);
+    </script>
+  </body>
+</html>
