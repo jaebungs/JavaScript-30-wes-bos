@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Console Tricks!</title>
+  </head>
+  <body>
+    <p onClick="makeGreen()">×BREAK×DOWN×</p>
+
+    <script>
+      const dogs = [
+        { name: "Snickers", age: 2 },
+        { name: "hugo", age: 8 },
+      ];
+
+      function makeGreen() {
+        const p = document.querySelector("p");
+        p.style.color = "#BADA55";
+        p.style.fontSize = "50px";
+      }
+
+      // Regular
+      console.log("This is just normal console.log");
+      // Interpolated
+      console.log("Inerpolated console.log %s", "!!!!!");
+      // Styled
+      console.log(
+        "%c This is styled console.log",
+        "font-size: 15px; background-color: blue;"
+      );
+      // warning!
+      console.warn("It is warning");
+      // Error :|
+      console.error("this is error!");
+      // Info
+      console.info("Scary crocodiles. they eat 3-4 ppl per year");
+      // Testing
+      const p = document.querySelector("p");
+      console.assert(
+        1 === 2,
+        "It is wrong! It fires when first argument is false"
+      );
+      // clearing
+      console.clear();
+      // Viewing DOM Elements
+      console.log(p); // shows dom of p
+      console.dir(p); // All of method and properties inside
+      // Grouping together
+      dogs.forEach((dog) => {
+        console.group(`${dog.name}`); //console.groupCollapsed works too
+        console.log(`This is ${dog.name}`);
+        console.log(`This is ${dog.name} and ${dog.age} years old`);
+        console.groupEnd(`${dog.name}`);
+      });
+      // counting
+      console.count(`Jae`);
+      console.count(`Jae`);
+      console.count(`Jae`);
+      console.count(`LoL`);
+      console.count(`LoL`);
+      console.count(`LoL`);
+      console.count(`LoL`);
+
+      // timing
+      console.time(`fetchin data`);
+      fetch("https://data.cityofchicago.org/resource/ydr8-5enu.json?")
+        .then((data) => data.json())
+        .then((data) => {console.timeEnd("fetchin data")
+        console.log(data)});
+    </script>
+  </body>
+</html>
