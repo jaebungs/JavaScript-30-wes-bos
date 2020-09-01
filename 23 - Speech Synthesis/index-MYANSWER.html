@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Speech Synthesis</title>
+    <link
+      href="https://fonts.googleapis.com/css?family=Pacifico"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="voiceinator">
+      <h1>The Voiceinator 5000</h1>
+
+      <select name="voice" id="voices">
+        <option value="">Select A Voice</option>
+      </select>
+
+      <label for="rate">Rate:</label>
+      <input name="rate" type="range" min="0" max="3" value="1" step="0.1" />
+
+      <label for="pitch">Pitch:</label>
+      <input name="pitch" type="range" min="0" max="2" step="0.1" />
+      <textarea name="text">Go return beer</textarea>
+      <button id="stop">Stop!</button>
+      <button id="speak">Speak</button>
+    </div>
+
+    <script>
+      const msg = new SpeechSynthesisUtterance();
+      let voices = [];
+      const voicesDropdown = document.querySelector('[name="voice"]');
+      const options = document.querySelectorAll(
+        '[type="range"], [name="text"]'
+      );
+      const rate = document.querySelector('[name="rate"]');
+      const pitch = document.querySelector('[name="pitch"]');
+      const speakButton = document.querySelector("#speak");
+      const stopButton = document.querySelector("#stop");
+
+      msg.text = document.querySelector('[name="text"]').value;
+
+      function populateVoices() {
+        voices = this.getVoices();
+        console.log(voices);
+        // this was my answer (it works)
+        // voices.map((voice) => {
+        //     voiceOptions = document.createElement('option')
+        //     voiceOptions.textContent = `${voice.name} ${voice.lang}`
+        //     voicesDropdown.appendChild(voiceOptions)
+        // })
+
+        voicesDropdown.innerHTML = voices
+          .map(
+            (voice) =>
+              `<option value="${voice.name}">${voice.name} ${voice.lang}</option>`
+          )
+          .join("");
+      }
+
+      function setVoice() {
+        msg.voice = voices.find((voice) => voice.name === this.value);
+        rate.addEventListener("change", () => {
+          msg.rate = this.value;
+        });
+        pitch.addEventListener("change", () => {
+          msg.pitch = this.value;
+        });
+        toggle();
+      }
+
+      function toggle(startOver = true) {
+        speechSynthesis.cancel();
+        if(startOver){
+            speechSynthesis.speak(msg);
+        }
+      }
+
+      function setOptions() {
+        msg.text = this.value;
+        toggle();
+
+      }
+
+      speechSynthesis.addEventListener("voiceschanged", populateVoices);
+      voicesDropdown.addEventListener("change", setVoice);
+      options.forEach((option) => {
+        option.addEventListener("change", setOptions);
+      });
+      stopButton.addEventListener('click', () => {toggle(false)})
+      speakButton.addEventListener('click', toggle.bind(null, true))
+    </script>
+  </body>
+</html>
