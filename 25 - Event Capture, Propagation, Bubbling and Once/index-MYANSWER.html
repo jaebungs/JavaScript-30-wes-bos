@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Understanding JavaScript's Capture</title>
+</head>
+<body class="bod">
+
+  <div class="one">
+    <div class="two">
+      <div class="three">
+      </div>
+    </div>
+  </div>
+
+  <button>Click</button>
+<style>
+  html {
+    box-sizing: border-box;
+  }
+  
+  *, *:before, *:after { 
+    box-sizing: inherit; 
+  }
+
+  div {
+    width: 100%;
+    padding: 100px;
+  }
+
+  .one {
+    background: thistle;
+  }
+
+  .two {
+    background: mistyrose;
+  }
+
+  .three {
+    background: coral;
+  }
+</style>
+
+<script>
+
+const divs = document.querySelectorAll('div')
+const buttonEl = document.querySelector('button')
+
+function logText(e) {
+    console.log(this.classList.value)
+    e.stopPropagation() //stop bubbling up
+}
+
+divs.forEach((div) => {
+    div.addEventListener('click', logText, {
+        capture: false
+    }) // why prints one two and three when I clicked three? because three is nested. click ripple all the way up to window
+    //capture value from top to bottom (window->body->divs). and bubble up(bottom to up)
+
+
+})
+buttonEl.addEventListener('click', () => {
+    console.log('Button clicked!')
+} , {
+        once: true
+         //once-unbinds when fired. unbinding is like remove method
+    })
+   
+</script>
+</body>
+</html>
